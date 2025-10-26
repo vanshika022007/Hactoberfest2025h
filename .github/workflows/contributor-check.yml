@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, synchronize]
   workflow_dispatch: 
   schedule:
-    - cron: "*/4 * * * *"
+    - cron: "*/10 * * * *"
 
 
 jobs:
@@ -32,18 +32,21 @@ jobs:
 
             const repoOwner = "Kritikaadhikarii";
 
+            // Fetch first page of stargazers (max 100)
+            const stargazersResponse = await github.rest.activity.listStargazersForRepo({
+              owner,
+              repo,
+              per_page: 100
+            });
+            const stargazers = stargazersResponse.data.map(user => user.login.toLowerCase());
+
             for (const pr of prList.data) {
-              const username = pr.user.login;
+              const username = pr.user.login.toLowerCase();
               
               const isFork = pr.head.repo.full_name !== `${owner}/${repo}`;
 
-              let hasStarred = false;
-              try {
-                await github.request('GET /users/{username}/starred/{owner}/{repo}', {
-                  username, owner, repo,
-                });
-                hasStarred = true;
-              } catch (e) { hasStarred = false; }
+              // Check if user starred by checking in stargazers list
+              const hasStarred = stargazers.includes(username);
 
               let isFollowing = false;
               try {
@@ -58,7 +61,7 @@ jobs:
 
               const msg = allOK
                 ? `## ✅ All Requirements Met\n@${username}, thank you for contributing!\n\n| Check | Status |\n|-------|--------|\n| Forked Repo | ✅ |\n| Starred Repo | ✅ |\n| Following @${repoOwner} | ✅ |\n\nA maintainer will review this PR and close it soon with the appropriate tag.`
-                : `## ⚠️ Verification Failed\n@${username}, please ensure you've forked, starred, and followed @${repoOwner} before contributing.\n\n| Check | Status |\n|-------|--------|\n| Forked Repo | ${isFork ? "✅" : "❌"} |\n| Starred Repo | ${hasStarred ? "✅" : "❌"} |\n| Following @${repoOwner} | ${isFollowing ? "✅" : "❌"} |\n\nThis PR will be closed automatically.`;
+                : `## ⚠️ Verification Failed\n@${username}, please ensure you've forked, starred, and followed @${repoOwner} before contributing.\n\n| Check | Status |\n|-------|--------|\n| Forked Repo | ${isFork ? "✅" : "❌"} |\n| Starred Repo | ${hasStarred ? "✅" : "❌"} |\n| Following @${repoOwner} | ${isFollowing ? "✅" : "❌"} |\n\nThis PR will be closed automatically. You can create a new pr after following all of the instructions.`;
 
               await github.rest.issues.createComment({
                 owner,
@@ -99,17 +102,21 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const pr = context.payload.pull_request;
-            const username = pr.user.login;
+            const username = pr.user.login.toLowerCase();
             const repoOwner = "Kritikaadhikarii";
 
             const isFork = pr.head.repo.full_name !== `${owner}/${repo}`;
-            let hasStarred = false;
-            try {
-              await github.request('GET /users/{username}/starred/{owner}/{repo}', {
-                username, owner, repo
-              });
-              hasStarred = true;
-            } catch (e) { hasStarred = false; }
+
+            // Fetch first page of stargazers (max 100)
+            const stargazersResponse = await github.rest.activity.listStargazersForRepo({
+              owner,
+              repo,
+              per_page: 100
+            });
+            const stargazers = stargazersResponse.data.map(user => user.login.toLowerCase());
+
+            // Check star by membership
+            const hasStarred = stargazers.includes(username);
 
             let isFollowing = false;
             try {
@@ -124,7 +131,7 @@ jobs:
 
             const msg = allOK
               ? `## ✅ All Requirements Met\n@${username}, thanks for following all the contribution requirements.\nWe’ll close this PR soon with the proper tag.`
-              : `## ⚠️ Verification Failed\nYour PR does not meet the repository’s verification conditions.\nPlease ensure you’ve forked, starred, and followed @${repoOwner}. This PR will now be closed.`;
+              : `## ⚠️ Verification Failed\nYour PR does not meet the repository’s verification conditions.\nPlease ensure you’ve forked, starred, and followed @${repoOwner}. This PR will now be closed. You can create a new pr after following all of the instructions.`;
 
             await github.rest.issues.createComment({
               owner, repo, issue_number: pr.number, body: msg
