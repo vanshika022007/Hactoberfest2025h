@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Nunito:wght@500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at top, #0b0b28, #060617);
+  color: #fff;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-container {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+  z-index: 2;
+  width: 350px;
+}
+
+.game-title {
+  font-size: 1.8rem;
+  color: #ff4ff7;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px #ff00ff;
+}
+
+.word-box {
+  font-size: 1.5rem;
+  margin: 20px 0;
+  color: #00d9ff;
+  text-shadow: 0 0 10px #00ffff;
+  transition: 0.3s;
+}
+
+#word-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  outline: none;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  font-family: 'Nunito', sans-serif;
+}
+
+button {
+  background: linear-gradient(90deg, #ff00ff, #00ffff);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  box-shadow: 0 0 20px #ff00ff;
+  transform: scale(1.05);
+}
+
+/* Background animation */
+.anime-bg {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: url('https://i.ibb.co/6gPztjq/anime-sky.jpg') center/cover no-repeat;
+  z-index: 0;
+  opacity: 0.25;
+  animation: moveBg 30s linear infinite;
+  filter: blur(3px);
+}
+
+@keyframes moveBg {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-30%);
+  }
+}
