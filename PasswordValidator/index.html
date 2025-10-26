@@ -7,25 +7,32 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h2>Password Validator</h2>
+  <main class="container">
+    <h1>Password Validator</h1>
 
-    <label for="password">Enter your password:</label>
-    <input type="password" id="password" placeholder="Enter your password" aria-describedby="requirements">
-    <button id="validateBtn">Validate</button>
+    <form id="passwordForm" novalidate>
+      <label for="password">Enter your password:</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password"
+        placeholder="Enter your password" 
+        aria-describedby="requirements message"
+        required
+      >
+      <button type="button" id="validateBtn">Validate</button>
+    </form>
 
-    <!-- Feedback message -->
     <div id="message" role="alert" aria-live="polite"></div>
 
-    <!-- Requirements list -->
-    <div id="requirements">
+    <section id="requirements" aria-label="Password requirements">
       <p><span id="lower" class="invalid">✖</span> At least one lowercase letter</p>
       <p><span id="upper" class="invalid">✖</span> At least one uppercase letter</p>
       <p><span id="number" class="invalid">✖</span> At least one number</p>
       <p><span id="special" class="invalid">✖</span> At least one special character (!@#$...)</p>
       <p><span id="length" class="invalid">✖</span> Minimum length of 8 characters</p>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
