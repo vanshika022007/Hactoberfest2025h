@@ -227,7 +227,7 @@
       el.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:300});
     }
 
-    // render
+    
     function render(){
       pointsEl.textContent = fmt(state.points);
       ppsEl.textContent = `${(state.cps).toFixed(1)} per second • ${state.perClick.toFixed(1)} per click`;
