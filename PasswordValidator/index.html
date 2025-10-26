@@ -10,22 +10,13 @@
   <main class="container">
     <h1>Password Validator</h1>
 
-    <form id="passwordForm" novalidate>
-      <label for="password">Enter your password:</label>
-      <input 
-        type="password" 
-        id="password" 
-        name="password"
-        placeholder="Enter your password" 
-        aria-describedby="requirements message"
-        required
-      >
-      <button type="button" id="validateBtn">Validate</button>
-    </form>
-
+    <label for="password">Enter your password:</label>
+    <input type="password" id="password" placeholder="Enter your password" aria-describedby="requirements">
+    <button id="validateBtn">Validate</button>
     <div id="message" role="alert" aria-live="polite"></div>
 
-    <section id="requirements" aria-label="Password requirements">
+
+    <div id="requirements">
       <p><span id="lower" class="invalid">✖</span> At least one lowercase letter</p>
       <p><span id="upper" class="invalid">✖</span> At least one uppercase letter</p>
       <p><span id="number" class="invalid">✖</span> At least one number</p>
