@@ -1,0 +1,140 @@
+name: Contributor Verification Bot
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  workflow_dispatch: 
+  schedule:
+    - cron: "0 */2 * * *" 
+
+jobs:
+  check_existing_prs:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v6
+        name: Check all open pull requests
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const prList = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100
+            });
+
+            const repoOwner = "Kritikaadhikarii";
+
+            for (const pr of prList.data) {
+              const username = pr.user.login;
+              
+              const isFork = pr.head.repo.full_name !== `${owner}/${repo}`;
+
+              let hasStarred = false;
+              try {
+                await github.request('GET /users/{username}/starred/{owner}/{repo}', {
+                  username, owner, repo,
+                });
+                hasStarred = true;
+              } catch (e) { hasStarred = false; }
+
+              let isFollowing = false;
+              try {
+                await github.request('GET /users/{username}/following/{target_user}', {
+                  username,
+                  target_user: repoOwner
+                });
+                isFollowing = true;
+              } catch (e) { isFollowing = false; }
+
+              const allOK = isFork && hasStarred && isFollowing;
+
+              const msg = allOK
+                ? `## ✅ All Requirements Met\n@${username}, thank you for contributing!\n\n| Check | Status |\n|-------|--------|\n| Forked Repo | ✅ |\n| Starred Repo | ✅ |\n| Following @${repoOwner} | ✅ |\n\nA maintainer will review this PR and close it soon with the appropriate tag.`
+                : `## ⚠️ Verification Failed\n@${username}, please ensure you've forked, starred, and followed @${repoOwner} before contributing.\n\n| Check | Status |\n|-------|--------|\n| Forked Repo | ${isFork ? "✅" : "❌"} |\n| Starred Repo | ${hasStarred ? "✅" : "❌"} |\n| Following @${repoOwner} | ${isFollowing ? "✅" : "❌"} |\n\nThis PR will be closed automatically.`;
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr.number,
+                body: msg
+              });
+
+              if (!allOK) {
+                await github.rest.pulls.update({
+                  owner,
+                  repo,
+                  pull_number: pr.number,
+                  state: 'closed'
+                });
+              } else {
+                await github.rest.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  labels: ['✅ Verified Contributor']
+                });
+              }
+            }
+
+  check_new_prs:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v6
+        name: Check single pull request
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const username = pr.user.login;
+            const repoOwner = "Kritikaadhikarii";
+
+            const isFork = pr.head.repo.full_name !== `${owner}/${repo}`;
+            let hasStarred = false;
+            try {
+              await github.request('GET /users/{username}/starred/{owner}/{repo}', {
+                username, owner, repo
+              });
+              hasStarred = true;
+            } catch (e) { hasStarred = false; }
+
+            let isFollowing = false;
+            try {
+              await github.request('GET /users/{username}/following/{target_user}', {
+                username,
+                target_user: repoOwner
+              });
+              isFollowing = true;
+            } catch (e) { isFollowing = false; }
+
+            const allOK = isFork && hasStarred && isFollowing;
+
+            const msg = allOK
+              ? `## ✅ All Requirements Met\n@${username}, thanks for following all the contribution requirements.\nWe’ll close this PR soon with the proper tag.`
+              : `## ⚠️ Verification Failed\nYour PR does not meet the repository’s verification conditions.\nPlease ensure you’ve forked, starred, and followed @${repoOwner}. This PR will now be closed.`;
+
+            await github.rest.issues.createComment({
+              owner, repo, issue_number: pr.number, body: msg
+            });
+
+            if (!allOK) {
+              await github.rest.pulls.update({
+                owner, repo, pull_number: pr.number, state: 'closed'
+              });
+            } else {
+              await github.rest.issues.addLabels({
+                owner, repo, issue_number: pr.number, labels: ['✅ Verified Contributor']
+              });
+            }
