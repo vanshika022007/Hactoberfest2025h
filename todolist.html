@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editable To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 591px
+        }
+
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .todo-container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 850px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            height: fit-content;
+            margin-top: 26px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .delete-btn,
+        .edit-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 2px;
+        }
+
+        .edit-btn {
+            background-color: #007bff;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .edit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .priority-high {
+            color: red;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+   <!---- <button class="toggle-theme" onclick="toggleTheme()">🌓 Theme</button>   --->
+    <h1 style="color: white;">📝 To-Do List</h1>
+
+    <div class="todo-container">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="taskInput">📝 Task:</label>
+                <input type="text" id="taskInput" placeholder="Enter task">
+            </div>
+
+            <div class="form-group">
+                <label for="dueDate">📅 Due Date:</label>
+                <input type="date" id="dueDate">
+            </div>
+
+            <div class="form-group">
+                <label for="priority">⚠️ Priority:</label>
+                <select id="priority">
+                    <option value="High">High Priority</option>
+                    <option value="Medium">Medium Priority</option>
+                    <option value="Low">Low Priority</option>
+                </select>
+            </div>
+
+            <button id="addBtn" onclick="addTask()">Add Task</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Task</th>
+                    <th>Added Date & Time</th>
+                    <th>Due Date</th>
+                    <th>Priority</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="taskBody">
+                <!-- Task rows will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let taskCount = 0;
+        let isEditing = false;
+        let currentRow = null;
+
+        function addTask() {
+            const taskText = document.getElementById('taskInput').value.trim();
+            const dueDate = document.getElementById('dueDate').value;
+            const priority = document.getElementById('priority').value;
+
+            if (taskText === '' || dueDate === '') {
+                alert("Please fill in both task and due date.");
+                return;
+            }
+
+            const currentDate = new Date();
+            const addedTime = currentDate.toLocaleString();
+
+            const priorityClass = {
+                High: 'priority-high',
+                Medium: 'priority-medium',
+                Low: 'priority-low'
+            }[priority];
+
+            if (isEditing && currentRow) {
+                // Update existing task
+                currentRow.children[1].textContent = taskText;
+                currentRow.children[3].textContent = dueDate;
+                currentRow.children[4].textContent = priority;
+                currentRow.children[4].className = priorityClass;
+
+                // Reset
+                isEditing = false;
+                currentRow = null;
+                document.getElementById('addBtn').textContent = "Add Task";
+            } else {
+                taskCount++;
+                const tbody = document.getElementById('taskBody');
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+          <td>${taskCount}</td>
+          <td>${taskText}</td>
+          <td>${addedTime}</td>
+          <td>${dueDate}</td>
+          <td class="${priorityClass}">${priority}</td>
+          <td>
+            <button class="edit-btn" onclick="editTask(this)">Edit</button>
+            <button class="delete-btn" onclick="deleteTask(this)">Delete</button>
+          </td>
+        `;
+
+                tbody.appendChild(row);
+            }
+
+            // Clear input fields
+            document.getElementById('taskInput').value = '';
+            document.getElementById('dueDate').value = '';
+            document.getElementById('priority').value = 'Medium';
+        }
+       // function toggleTheme() {
+       //     document.body.classList.toggle('dark-theme');
+       // }
+
+        function deleteTask(button) {
+            const row = button.parentElement.parentElement;
+            row.remove();
+
+            // Reorder row numbers
+            const rows = document.querySelectorAll("#taskBody tr");
+            taskCount = 0;
+            rows.forEach((tr, index) => {
+                tr.children[0].textContent = index + 1;
+                taskCount++;
+            });
+
+            // Reset if editing deleted row
+            if (row === currentRow) {
+                isEditing = false;
+                currentRow = null;
+                document.getElementById('addBtn').textContent = "Add Task";
+            }
+        }
+
+        function editTask(button) {
+            currentRow = button.parentElement.parentElement;
+            const taskText = currentRow.children[1].textContent;
+            const dueDate = currentRow.children[3].textContent;
+            const priority = currentRow.children[4].textContent;
+
+            document.getElementById('taskInput').value = taskText;
+            document.getElementById('dueDate').value = dueDate;
+            document.getElementById('priority').value = priority;
+
+            document.getElementById('addBtn').textContent = "Update Task";
+            isEditing = true;
+        }
+    </script>
+
+</body>
+
+</html>
