@@ -1,0 +1,116 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top, #1b0028, #000000);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.todo-container {
+  background: rgba(20, 20, 30, 0.8);
+  padding: 30px 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 40px rgba(255, 0, 200, 0.4), 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+h1 {
+  color: #ff66cc;
+  text-shadow: 0 0 15px #ff66cc, 0 0 30px #6600ff;
+  margin-bottom: 25px;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+#task-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ff66cc;
+  background: #0d001a;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 0, 200, 0.4);
+}
+
+#task-input::placeholder {
+  color: #aaa;
+}
+
+#add-btn {
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #ff66cc, #6600ff);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #ff66cc;
+  transition: all 0.3s ease;
+}
+
+#add-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #ff66cc, 0 0 10px #6600ff;
+}
+
+#task-list {
+  list-style: none;
+}
+
+.task-item {
+  background: rgba(40, 0, 60, 0.7);
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 0 10px rgba(255, 0, 200, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.task-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(255, 0, 200, 0.5);
+}
+
+.task-item.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #ff0099, #6600ff);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  box-shadow: 0 0 8px #ff00ff;
+  transition: transform 0.3s;
+}
+
+.delete-btn:hover {
+  transform: rotate(90deg) scale(1.2);
+}
