@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tic-Tac-Toe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Tic-Tac-Toe</h1>
+
+    <section class="scoreboard">
+      <div class="score">X: <span id="scoreX">0</span></div>
+      <div class="score">O: <span id="scoreO">0</span></div>
+    </section>
+
+    <section class="game">
+      <div id="board" class="board">
+        <button class="cell" data-index="0"></button>
+        <button class="cell" data-index="1"></button>
+        <button class="cell" data-index="2"></button>
+        <button class="cell" data-index="3"></button>
+        <button class="cell" data-index="4"></button>
+        <button class="cell" data-index="5"></button>
+        <button class="cell" data-index="6"></button>
+        <button class="cell" data-index="7"></button>
+        <button class="cell" data-index="8"></button>
+      </div>
+
+      <div class="controls">
+        <div id="message" class="message">Player X's turn</div>
+        <button id="restartBtn" class="btn">Restart</button>
+      </div>
+    </section>
+
+    <footer class="notes">Local two-player game. Click any square to play.</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
