@@ -1,0 +1,47 @@
+:root{
+  --bg1:#0b1020;
+  --bg2:#121526;
+  --accent:#ffd166;
+  --muted:rgba(255,255,255,0.75);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+body{
+  background: linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:var(--muted);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+canvas{position:fixed;inset:0;display:block;z-index:0}
+
+/* UI */
+.ui{
+  position:fixed;left:18px;top:18px;z-index:10;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.04);
+  padding:14px 16px;border-radius:12px;backdrop-filter: blur(6px);
+  width:320px;max-width:calc(100% - 36px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(255,209,102,0.02) inset;
+}
+h1{margin:0 0 6px;font-size:18px}
+.sub{margin:0 0 12px;font-size:12px;color:rgba(255,255,255,0.7)}
+
+.controls{
+  display:flex;flex-direction:column;gap:8px;
+  font-size:13px;
+}
+.controls label{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.controls input[type="range"]{width:140px}
+.controls button{
+  margin-top:6px;padding:8px 10px;border-radius:8px;border:none;background:linear-gradient(90deg,#ff66cc,#00eaff);color:#081226;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 16px rgba(0,0,0,0.5);
+}
+.footer{margin-top:8px;font-size:11px;color:rgba(255,255,255,0.5);text-align:left}
+
+/* small mobile tweaks */
+@media (max-width:520px){
+  .ui{left:12px;top:12px;padding:12px;width:94%}
+  .controls{font-size:12px}
+}
