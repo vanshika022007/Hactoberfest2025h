@@ -3,12 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anime Typing Game</title>
+  <title>Typing Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="game-container">
-    <h1 class="game-title">⚡ Anime Typing Game ⚡</h1>
+    <h1 class="game-title">⚡ Speed Typing Game ⚡</h1>
+
+    <div class="difficulty-container">
+      <label for="difficulty">Difficulty:</label>
+      <select id="difficulty">
+        <option value="easy">Easy (45s)</option>
+        <option value="medium" selected>Medium (30s)</option>
+        <option value="hard">Hard (20s)</option>
+      </select>
+    </div>
 
     <div class="word-box" id="word-display">Loading...</div>
 
@@ -18,11 +27,13 @@
       placeholder="Type here..."
       autofocus
       autocomplete="off"
+      disabled
     />
 
     <div class="stats">
       <p>⏱ Time: <span id="time">30</span>s</p>
       <p>💫 Score: <span id="score">0</span></p>
+      <p>⚡ WPM: <span id="wpm">0</span></p>
     </div>
 
     <button id="start-btn">Start Game</button>
